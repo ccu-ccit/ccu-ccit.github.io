@@ -1,44 +1,83 @@
 <template>
-  <a-table :columns="columns" :data-source="activity.questions" :row-selection="rowSelection" />
+  <div>
+    <a-table
+      :pagination="false"
+      :columns="columns"
+      :data-source="activity.questions"
+      :row-selection="{
+        selectedRowKeys: selectedRowKeys,
+        onChange: onSelectChange,
+      }"
+    />
+    <div class="action">
+      <a-button
+        :disabled="!hasSelected"
+        size="small"
+        type="primary"
+        @click="start()"
+        >開始</a-button
+      >
+    </div>
+  </div>
 </template>
 <script>
-
+import { createNamespacedHelpers } from "vuex";
 const columns = [
   {
-    title: '題目',
-    dataIndex: 'question',
-    key: 'question',
-  }
+    title: "題目",
+    dataIndex: "question",
+    key: "question",
+  },
 ];
-
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
+const { mapActions: teacherActions } = createNamespacedHelpers("teacher");
 
 export default {
-  name: 'selectQuestion',
+  name: "selectQuestion",
   props: {
     activity: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
-  created(){
-    console.log(this.activity)
+  created() {
+    console.log(this.activity);
   },
   data() {
     return {
       columns,
-      rowSelection,
+      selectedRowKeys: [],
     };
+  },
+  computed: {
+    hasSelected() {
+      return this.selectedRowKeys.length > 0;
+    },
+  },
+  methods: {
+    ...teacherActions(["setInProgressActivity"]),
+    start() {
+      this.activity.online = true;
+      this.activity.questions.map((question) => {
+        if (this.selectedRowKeys.includes(question.serial)) {
+          question.visible = true;
+        } else {
+          question.visible = false;
+        }
+      });
+      this.setInProgressActivity(this.activity);
+      this.$router.push({ name: "activity-code" });
+    },
+    onSelectChange(selectedRowKeys) {
+      console.log("selectedRowKeys changed: ", selectedRowKeys);
+      this.selectedRowKeys = selectedRowKeys;
+    },
   },
 };
 </script>
+<style lang="scss" scoped>
+.action {
+  width: 100%;
+  text-align: right;
+  margin-top: 10px;
+}
+</style>
