@@ -22,13 +22,13 @@ jobs:
         run: |
           npm install
           npm run build
-          cp dist ..
+          cp -r dist ..
       - name: Git commit
         run:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git checkout Release
-          cp ../dist .
+          cp -r ../dist .
           git add dist
           git commit ${{ steps.date.outputs.date }}
       - name: GitHub Push
