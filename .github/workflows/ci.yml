@@ -30,7 +30,7 @@ jobs:
           git checkout Release
           cp -r ../dist .
           git add dist
-          git commit -m ${{ steps.date.outputs.date }} -a
+          git commit -m $(date +'%Y-%m-%d') -a
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
         env:
