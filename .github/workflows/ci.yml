@@ -18,19 +18,19 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
       - name: Check out code into the directory
         uses: actions/checkout@v2
-      - name: Build SDK
+      - name: Build
         run: |
           npm install
           npm run build
           cp -r dist ..
       - name: Git commit
-        run:
+        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git checkout Release
           cp -r ../dist .
           git add dist
-          git commit ${{ steps.date.outputs.date }}
+          git commit -m ${{ steps.date.outputs.date }} -a
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
         env:
