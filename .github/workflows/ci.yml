@@ -29,7 +29,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git pull --all
           git checkout Release -f
-          cp -r ../dist .
+          cp -r ../dist/ .
           git add dist
           git commit -m $(date +'%Y-%m-%d') -a
       - name: GitHub Push
