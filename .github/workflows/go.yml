@@ -1,0 +1,38 @@
+name: ci
+on:
+  push:
+    paths-ignore:
+    - '*.md'
+  pull_request:
+    paths-ignore:
+    - '*.md'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node 12
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Check out code into the directory
+        uses: actions/checkout@v2
+      - name: Build SDK
+        run: |
+          npm install
+          npm run build
+          copy dist ..
+      - name: Git commit
+        run:
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git checkout Release
+          copy ../dist .
+          git add dist
+          git commit ${{ steps.date.outputs.date }}
+      - name: GitHub Push
+        uses: ad-m/github-push-action@v0.6.0
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          branch: Release
