@@ -34,6 +34,6 @@ jobs:
           git commit -m $(date +'%Y-%m-%d') -a
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
-        env:
+        with:
           github_token: ${{ secrets.GHCR_TOKEN }}
           branch: Release
