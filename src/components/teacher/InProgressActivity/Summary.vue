@@ -24,6 +24,11 @@
         :data="data"
       ></ve-pie>
     </span>
+    <div class="action">
+      <a-button size="small" type="primary" style="margin: 20px" @click="next"
+        >結束活動</a-button
+      >
+    </div>
   </div>
 </template>
 

@@ -3,9 +3,9 @@ import Vuex from 'vuex'
 import Vue from 'vue/dist/vue.js'
 import App from './App.vue'
 import router from '@/router'
-import Antd  from 'ant-design-vue'
+import Antd from 'ant-design-vue'
 import VCharts from 'v-charts'
-import store from '@/store' 
+import store from '@/store'
 import 'ant-design-vue/dist/antd.css'
 Vue.config.productionTip = false
 Vue.use(Antd)

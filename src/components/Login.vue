@@ -3,9 +3,14 @@
     <h2 class="login-title">歡迎來到互動教學系統</h2>
     <a-form ref="form" :model="form" class="login-form">
       <div class="switch-wrapper">
-        <a-switch checked-children="教師" un-checked-children="學生" default-checked v-model="teacher"/>
+        <a-switch
+          checked-children="教師"
+          un-checked-children="學生"
+          default-checked
+          v-model="teacher"
+        />
       </div>
-      <transition 
+      <transition
         enter-class="my-fade-enter"
         leave-to-class="my-fade-leave-to"
         enter-active-class="my-fade-enter-active"
@@ -20,15 +25,21 @@
           </a-form-item>
           <a-form-item>
             <a-input-password class="inputBox" v-model="form.password">
-              <a-icon slot="prefix" type="lock"/>
+              <a-icon slot="prefix" type="lock" />
             </a-input-password>
           </a-form-item>
           <a-form-item>
-            <a-button class="submit" type="primary" @click="onSubmit" :disabled="valid">登錄</a-button>
+            <a-button
+              class="submit"
+              type="primary"
+              @click="onSubmit"
+              :disabled="valid"
+              >登錄</a-button
+            >
           </a-form-item>
         </div>
       </transition>
-      <transition 
+      <transition
         enter-class="my-fade-enter"
         leave-to-class="my-fade-leave-to"
         enter-active-class="my-fade-enter-active"
@@ -37,22 +48,40 @@
         <div v-if="!teacher">
           <h2 class="title">學生登入 LOGIN</h2>
           <a-form-item>
-            <a-input class="inputBox" placeholder="學號" v-model="studentForm.studentID">
-              <a-icon slot="prefix" type="user"/>
+            <a-input
+              class="inputBox"
+              placeholder="學號"
+              v-model="studentForm.studentID"
+            >
+              <a-icon slot="prefix" type="user" />
             </a-input>
           </a-form-item>
           <a-form-item>
-            <a-input class="inputBox" placeholder="暱稱" v-model="studentForm.nickname">
-              <a-icon slot="prefix" type="smile"/>
+            <a-input
+              class="inputBox"
+              placeholder="暱稱"
+              v-model="studentForm.nickname"
+            >
+              <a-icon slot="prefix" type="smile" />
             </a-input>
           </a-form-item>
           <a-form-item>
-            <a-input class="inputBox" placeholder="活動代碼" v-model="studentForm.activatyCode">
-              <a-icon slot="prefix" type="barcode"/>
+            <a-input
+              class="inputBox"
+              placeholder="活動代碼"
+              v-model="studentForm.activatyCode"
+            >
+              <a-icon slot="prefix" type="barcode" />
             </a-input>
           </a-form-item>
           <a-form-item>
-            <a-button class="submit" type="primary" @click="onSubmit" :disabled="valid">加入</a-button>
+            <a-button
+              class="submit"
+              type="primary"
+              @click="onSubmit"
+              :disabled="valid"
+              >加入</a-button
+            >
           </a-form-item>
         </div>
       </transition>
@@ -66,54 +95,65 @@ export default {
     return {
       form: {
         username: "admin",
-        password: "123456"
+        password: "123456",
       },
       studentForm: {
         studentID: null,
         nickname: null,
-        activatyCode: null
+        activatyCode: null,
       },
-      teacher: true
+      teacher: true,
+    };
+  },
+  created() {
+    this.studentForm.studentID = sessionStorage.getItem("studentId");
+    this.studentForm.nickname = sessionStorage.getItem("nickname");
+    if (this.studentForm.studentID) {
+      this.teacher = false;
     }
   },
   computed: {
-    valid(){
-      if(this.teacher){
-        return !(this.form.username && this.form.password)
+    valid() {
+      if (this.teacher) {
+        return !(this.form.username && this.form.password);
       } else {
-        return !(this.studentForm.studentID && this.studentForm.nickname && this.studentForm.activatyCode)
+        return !(
+          this.studentForm.studentID &&
+          this.studentForm.nickname &&
+          this.studentForm.activatyCode
+        );
       }
-    }
+    },
   },
   methods: {
-     onSubmit() {
-      if(this.teacher){
-        if (this.form.username === 'admin') {
-          this.$store.dispatch('login', 'teacher')
-          this.$router.push({name: 'home'})
+    onSubmit() {
+      if (this.teacher) {
+        if (this.form.username === "admin") {
+          this.$store.dispatch("login", "teacher");
+          this.$router.push({ name: "home" });
         }
       } else {
         const userInfo = {
           studentId: this.studentForm.studentID,
-          nickname: this.studentForm.nickname
-        }
-        this.$store.dispatch('login', userInfo)
-        this.$router.push({name: 'student-home'})
+          nickname: this.studentForm.nickname,
+          codename: this.studentForm.activatyCode,
+        };
+        this.$store.dispatch("login", userInfo);
+        this.$router.push({ name: "student-home" });
       }
     },
   },
-}
+};
 </script>
 <style>
 .login-form {
   width: 35%;
   height: 50%;
-  margin: 0 auto!important;
+  margin: 0 auto !important;
   background: #8080805c;
   border-radius: 10px;
-  padding: 40px 50px!important;
+  padding: 40px 50px !important;
   position: relative;
-  
 }
 
 .login-container {
@@ -130,13 +170,13 @@ export default {
   font-family: Microsoft Yahei;
 }
 
-.submit{
+.submit {
   width: 100%;
   height: 45px;
   font-size: 16px;
 }
 
-.title{
+.title {
   margin-bottom: 50px;
   color: #fff;
   font-weight: 700;
@@ -145,7 +185,7 @@ export default {
 }
 
 .ant-input-affix-wrapper .ant-input:not(:first-child) {
-    padding-left: 50px;
+  padding-left: 50px;
 }
 
 .switch-wrapper {
@@ -160,7 +200,7 @@ export default {
 .my-fade-enter {
   opacity: 0;
 }
-.my-fade-leave-to{
-  display: none
+.my-fade-leave-to {
+  display: none;
 }
 </style>

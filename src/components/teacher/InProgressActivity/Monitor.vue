@@ -1,6 +1,10 @@
 <template>
   <div class="wrapper">
+    <div v-if="studentAnsProgress.length == 0" class="spin-wrapper">
+      <a-spin size="large" />
+    </div>
     <a-table
+      v-else
       :pagination="false"
       :columns="columns"
       :data-source="studentAnsProgress"
@@ -17,16 +21,21 @@
       </span>
     </a-table>
     <div class="action">
-    <a-button size="small" type="primary" style="margin: 20px" @click="next"
-      >結束活動</a-button
-    >
+      <a-button size="small" type="primary" style="margin: 20px" @click="next"
+        >結束活動</a-button
+      >
     </div>
   </div>
 </template>
 <script>
 import { createNamespacedHelpers } from "vuex";
+import { getProgress } from "@/apis/req";
 const { mapGetters: teacherGetters } = createNamespacedHelpers("teacher");
+const { mapActions: teacherActions } = createNamespacedHelpers("teacher");
 export default {
+  props: {
+    activity: Object,
+  },
   data() {
     return {
       columns: [
@@ -36,6 +45,8 @@ export default {
           key: "name",
         },
       ],
+      studentAnsProgress: [],
+      polling: null,
     };
   },
   computed: {
@@ -50,12 +61,28 @@ export default {
         scopedSlots: { customRender: "answer" },
       });
     });
-    this.studentAnsProgress = this.getStudentAnsProgress;
+    getProgress({ codename: this.activity.codename }).then((res) => {
+      this.setStudentAnsProgress(res.student === null ? [] : res.student);
+      this.studentAnsProgress = this.$store.state.teacher.studentAnsProgress;
+    });
+    this.pollData();
   },
   methods: {
+    ...teacherActions(["setStudentAnsProgress"]),
     next() {
       this.$router.push({ name: "summary" });
     },
+    pollData() {
+      this.polling = setInterval(() => {
+        getProgress({ codename: this.activity.codename }).then((res) => {
+          this.setStudentAnsProgress(res.student === null ? [] : res.student);
+          this.studentAnsProgress = this.$store.state.teacher.studentAnsProgress;
+        });
+      }, 5000);
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.polling);
   },
 };
 </script>
@@ -66,10 +93,18 @@ export default {
   border-radius: 10px;
   margin: 20px auto;
   padding: 10px;
-.action {
-  width: 100%;
-  text-align: right;
-  margin-top: 10px;
+  .action {
+    width: 100%;
+    text-align: right;
+    margin-top: 10px;
+  }
 }
+.spin-wrapper {
+  min-height: 200px;
+  position: relative;
+  div {
+    position: absolute;
+    top: 50%;
+  }
 }
 </style>

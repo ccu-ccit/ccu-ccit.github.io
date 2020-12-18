@@ -5,9 +5,10 @@
         <div class="header-warpper">
           <div style="font-size: 18px">互動教學系統</div>
           <div style="flex: 1 1 0%"></div>
+          <router-link v-if="user()=='teacher'" style="margin-right:10px; color:white" to='/teacher/home'>回活動列表</router-link>
           <div>
             <span class="logout-wrapper">
-              <a-icon type="logout"></a-icon>
+              <a-icon type="logout" @click="toLoginPage"></a-icon>
             </span>
           </div>
         </div>
@@ -37,11 +38,14 @@ export default {
       this.$router.push({ name: "login" });
     }
   },
-  computed: {
+  methods: {
     user() {
       return this.$store.state.user;
     },
-  },
+    toLoginPage() {
+      this.$router.push({ name: "login" });
+    }
+  }
 };
 </script>
 

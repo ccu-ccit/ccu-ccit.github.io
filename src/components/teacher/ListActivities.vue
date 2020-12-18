@@ -28,7 +28,7 @@
           :key="activityObj.serial"
           style="margin-bottom: 80px"
         >
-          <a-card :bordered="false" @click="detail">
+          <a-card :bordered="false">
             <a slot="extra" href="#" @click="() => openModal(activityObj)"
               >開始活動</a
             >
@@ -68,11 +68,9 @@
   </div>
 </template>
 <script>
-import { createNamespacedHelpers } from "vuex";
 import mngmtActivity from "./MngmtActivity";
 import selectQuestion from "./SelectQuestion";
 
-const { mapGetters: teacherGetters } = createNamespacedHelpers("teacher");
 
 export default {
   name: "Home",
@@ -88,15 +86,14 @@ export default {
     };
   },
   computed: {
-    ...teacherGetters(["activities"]),
+    activities(){
+      return this.$store.state.activities;
+    }
   },
   created() {
     console.log(this.activities);
   },
   methods: {
-    detail() {
-      console.log("show detail");
-    },
     openModal(activity) {
       this.selectedActivity = activity;
       this.visible = !this.visible;

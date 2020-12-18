@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrapper">
+  <div class="home-wrapper" v-if="inProgressActivity!=undefined">
     <p>
       Hi,{{ student() }} 歡迎加入{{ inProgressActivity.activity }}活動
       <a-icon type="bulb" />
@@ -37,26 +37,28 @@
         <a-button
           v-if="current == quizzes.length - 1"
           type="primary"
-          @click="$message.success('Processing complete!')"
+          @click="finish"
+          :disabled="!answer"
         >
-          Done
+          完成
         </a-button>
       </div>
     </template>
   </div>
 </template>
 <script>
-import { createNamespacedHelpers } from "vuex";
-const { mapGetters: studentGetters } = createNamespacedHelpers("student");
+import { submitAnswer } from '@/apis/req';
 export default {
   data() {
     return {
       current: 0,
       answer: null,
+      inProgressActivity: null,
+      codename: '',
+      user: ''
     };
   },
   computed: {
-    ...studentGetters(["inProgressActivity"]),
     quizzes() {
       return this.inProgressActivity.questions;
     },
@@ -64,21 +66,52 @@ export default {
       return this.inProgressActivity.questions[this.current];
     },
   },
-  created() {},
+  created() {
+    this.codename = this.$store.state.user.codename
+    this.user = this.$store.state.user
+    this.inProgressActivity = this.$store.getters.inProgressActivity(this.codename)
+    if (this.inProgressActivity == undefined){
+      this.showErrorReturnToLogin("無效的活動碼")
+    }
+  },
   methods: {
     next() {
+      const data = {
+        answer: this.answer,
+        serial: this.current,
+        name: this.user.nickname
+      }
+      submitAnswer(data, this.codename).then(res => {
+        console.log(res)
+      })
       this.current++;
       this.answer = null;
+    },
+    finish() {
+      this.$message.success('謝謝參與,歡迎加入下一個活動!')
+      const data = {
+        answer: this.answer,
+        serial: this.current,
+        name: this.user.nickname
+      }
+      submitAnswer(data, this.codename).then(res => {
+        console.log(res)
+      })
+      this.$router.push({ name: "login" });
     },
     student() {
       try {
         return this.$store.state.user.nickname;
       } catch (e) {
-        this.$message.error("請先進行登入或聯絡系統管理元");
+        this.showErrorReturnToLogin("請先進行登入")
         this.$router.push({ name: "login" });
         return null;
       }
     },
+    showErrorReturnToLogin(message) {
+        this.$message.error(message);
+        this.$router.push({ name: "login" });
+    }
   },
 };
 </script>

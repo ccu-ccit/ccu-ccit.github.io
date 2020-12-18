@@ -39,9 +39,6 @@ export default {
       default: null,
     },
   },
-  created() {
-    console.log(this.activity);
-  },
   data() {
     return {
       columns,
