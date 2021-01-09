@@ -50,6 +50,32 @@ const store = new Vuex.Store({
               "3": "百科全書",
               "4": "國語課本"
             }
+          },
+          {
+            "key": 3,
+            "visible": true,
+            "question": "「 □ 想 擁 有 好 人 緣 ， □ 有 禮 貌 的 對 待 別 人 。 」",
+            "answer": 2,
+            "serial": 3,
+            "options": {
+              "1": "連 / 就",
+              "2": "如 果 / 請",
+              "3": " 不 但 / 且 ",
+              "4": "一 看 / 就"
+            }
+          },
+          {
+            "key": 4,
+            "visible": true,
+            "question": "「 窗 外 流 進 來 □ □ 的 月 光 ， 洋 溢 著 祥 和 寧 靜 的 氣 氛 。 」",
+            "answer": 1,
+            "serial": 4,
+            "options": {
+              "1": "乳白",
+              "2": "清白",
+              "3": "慘白",
+              "4": "雪地"
+            }
           }
         ],
         "online": false
@@ -122,7 +148,7 @@ const store = new Vuex.Store({
               "3": "B＞C＞A",
               "4": "A＞C＞B"
             }
-          }       
+          }
         ],
         "online": false
       },
